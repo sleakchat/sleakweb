@@ -3,6 +3,10 @@
   const existing = Cookies.get(cookieName);
   let data = existing ? JSON.parse(existing) : {};
 
+  const sanitizeUrl = url => {
+    return url.replace(/^https?:\/\/(www\.)?/, '');
+  };
+
   const params = {};
   window.location.search
     .slice(1)
@@ -12,7 +16,7 @@
       if (k && v) params[k] = decodeURIComponent(v);
     });
 
-  const currentUrl = window.location.href;
+  const currentUrl = sanitizeUrl(window.location.href);
   const timestamp = new Date().toISOString();
 
   if (!data.landing_page) {
@@ -41,7 +45,7 @@
   }
 
   Cookies.set(cookieName, JSON.stringify(data), {
-    expires: 7,
+    expires: 90,
     path: '/',
     sameSite: 'Lax',
     domain: window.location.hostname.includes('sleak.chat') ? '.sleak.chat' : undefined,
